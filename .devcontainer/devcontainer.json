@@ -1,9 +1,0 @@
-{
-  "name": "R Development Environment",
-  "image": "rocker/rstudio",
-  "extensions": [
-    "ikuyadeu.r"
-  ],
-  "forwardPorts": [8787],
-  "postCreateCommand": "Rscript -e 'install.packages(c(\"tidyverse\", \"caret\"), repos=\"https://cloud.r-project.org\")'"
-}
