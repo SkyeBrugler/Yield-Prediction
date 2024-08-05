@@ -1,18 +1,41 @@
-# Yield-Prediction
+# **Yield Prediction Model with Random Forest - README**
 
-## Description
-This project includes two Excel files designed for testing and training a Random Forest model:
+Welcome to the Yield Prediction Model with Random Forest! This repository contains a UI application designed to predict crop yields using Random Forest models. Below are the details of the files included and instructions on how to use the application.
 
-Yield and Site Data: Contains simulated example data on yield and site characteristics for model training and evaluation.
-Site Information: Provides additional simulated site data used for making predictions with the trained Random Forest model.
-The goal of this project is to showcase how machine learning models can be effectively integrated into farming operations in a user-friendly manner.
+## **Files Included**
 
-## Files Included
-**Github_CSV_example.xlsx**: Contains historical data for training and testing the Random Forest model. Replace the example data with your own dataset for improved accuracy. Providing data from multiple years will enhance the model's performance and prediction reliability.
+1. **Example_Data_For_Model.xlsx**
+   - This file includes example data that can be used to train and test the model.
+   - Users are encouraged to replace the example data with their own data for model training and testing.
 
-**Prediction_information.xlsx**: Includes site-specific information for the target year and field where you wish to make predictions. Ensure that this file contains the same variables used in training and testing the Random Forest model.
+2. **Example_Data_for_Prediction.xlsx**
+   - This file contains example data for making predictions.
+   - Users are invited to replace the example data with their own data for prediction purposes.
 
-**script.R**: Features the R code required to run the Random Forest model. You will need to have R and RStudio installed to execute this script effectively.
+## **Application Overview**
+
+The UI application allows you to:
+1. Upload files for training and testing the model.
+2. Upload files for making predictions.
+3. Set the training and testing ratio (e.g., entering 0.8 means training with 80% of your data).
+4. Specify the price of corn and the cost of nitrogen (N).
+
+## **Running the Analysis**
+
+Once the data is uploaded and the parameters are set, you can run the analysis to obtain:
+- Metrics on the training and testing performance of the model.
+- Predicted yields for the site.
+- Economic Optimum Nitrogen Rate (EONR) and yield at EONR.
+- Quadratic plateau plot and variable importance.
+
+## **Variable Importance**
+
+- The variable importance plot helps you understand the significance of each variable in the model.
+- You can add or remove variables before analysis using a checkbox provided at the top of the UI.
+
+## **Downloading Predictions**
+
+- After running the analysis, you have the option to download an Excel sheet of your predictions.
 
 ## Installation
 install.packages("dplyr")
