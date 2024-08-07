@@ -1,4 +1,5 @@
 # **Yield Prediction Model with Random Forest - README**
+#**To Use from Browser: https://skyeburgler.shinyapps.io/Yield_prediction_app/**
 
 Welcome to the Yield Prediction Model with Random Forest! This repository contains a UI application designed to predict crop yields using Random Forest models. Below are the details of the files included and instructions on how to use the application.
 
