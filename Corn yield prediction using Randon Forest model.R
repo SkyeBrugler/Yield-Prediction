@@ -21,6 +21,8 @@ ui <- fluidPage(
       
       numericInput("split_ratio", "Training/Testing Split Ratio", value = 0.8, min = 0.5, max = 0.9, step = 0.05),
       
+      checkboxInput("stratify", "Use Stratification in Train/Test Split", value = FALSE),
+      
       numericInput("corn_price", "Enter Corn Price ($/bu)", value = 1),
       numericInput("n_price", "Enter Nitrogen Price ($/lb)", value = 0.1),
       
@@ -42,7 +44,10 @@ ui <- fluidPage(
       plotOutput("yieldPlot"),
       
       h3("Variable Importance Plot"),
-      plotOutput("importancePlot")
+      plotOutput("importancePlot"),
+      
+      h3("Stratification"),
+      plotOutput("Stratification")
     )
   )
 )
@@ -79,8 +84,14 @@ server <- function(input, output, session) {
   splitData <- reactive({
     data <- processedData()
     split_ratio <- input$split_ratio
+    stratify <- input$stratify
     
-    train_idx <- createDataPartition(data$Yield_bu_ac, p = split_ratio, list = FALSE)
+    if (stratify && "site" %in% colnames(data)) {
+      train_idx <- createDataPartition(data$site, p = split_ratio, list = FALSE)
+    } else {
+      train_idx <- sample(seq_len(nrow(data)), size = round(nrow(data) * split_ratio))
+    }
+    
     train_data <- data[train_idx, ]
     test_data <- data[-train_idx, ]
     
@@ -228,23 +239,44 @@ server <- function(input, output, session) {
     ggplot(importance_df, aes(x = reorder(Variable, Importance), y = Importance)) +
       geom_bar(stat = "identity", fill = "steelblue") +
       coord_flip() +
-      labs(title = "Variable Importance",
-           x = "Variables",
-           y = "Importance (IncNodePurity)") +
-      theme_minimal()
+      labs(title = "Variable Importance", x = "Variables", y = "Importance")
   })
   
+  # New density plot for stratification visualization
+  output$Stratification <- renderPlot({
+    split <- splitData()
+    train_data <- split$train_data
+    test_data <- split$test_data
+    
+    if ("site" %in% colnames(train_data)) {
+      combined_data <- bind_rows(
+        mutate(train_data, Dataset = "Training"),
+        mutate(test_data, Dataset = "Testing")
+      )
+      
+      ggplot(combined_data, aes(x = site, fill = Dataset)) +
+        geom_bar(position = "dodge") +
+        labs(title = "Stratification by Site",
+             x = "Site",
+             y = "Count")
+    } else {
+      plot.new()
+      title("Stratification plot not available: 'site' column missing.")
+    }
+  })
   
-  # Download predictions
+  # Download predictions as an Excel file
   output$downloadData <- downloadHandler(
     filename = function() {
-      paste("Predictions-", Sys.Date(), ".xlsx", sep = "")
+      paste("predictions_", Sys.Date(), ".xlsx", sep = "")
     },
     content = function(file) {
-      write_xlsx(predictions()$predictions, file)
+      pred_data <- predictions()$predictions
+      write_xlsx(pred_data, file)
     }
   )
 }
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+
